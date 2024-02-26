@@ -78,7 +78,7 @@
 
 ### 4. SQL Injection
 
-- SQL Injection対策にはplacefolderを使用する
+- SQL Injection対策にはplaceholderを使用する
     ```python
     query = "SELECT price FROM stocks WHERE symbol = ?"
     cur.execute(query, (value,))
