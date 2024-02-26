@@ -1,0 +1,90 @@
+# secure-code-game
+
+> This is my own README with a record of what I learned
+>
+> Original README is [here](/docs/README.md)
+
+## Season-1
+
+### 1. A floating-point underflow
+
+>  浮動小数点アンダーフロー脆弱性
+
+- float型を使う際は気をつけるべき点が増える
+    - コンピュータの仕組み上、正確な少数を表現できないため
+        ```python
+        a = 1.1
+        b = 2.2
+        c = 3.3
+
+        # 以下の演算はAssertionErrorとなる
+        assert a + b == c
+        ```
+    - 大きい少数を用いると、内部で近似が行われ小さい少数が打ち消されてしまう
+        ```python
+        a = 1e19  # <- float
+        b = 1000.00
+
+        # 以下の演算はAssertionErrorとなる
+        assert a + b == 10000000000000001000
+        ```
+- Pythonだと`decimal.Decimal`モジュールを使うと、正確な浮動小数点の計算が可能
+    - `Decimal(str(***))`：代入する数値をstr型にするのが鉄則?
+- また、プログラムの仕様に沿い／を定義し、適切な最大値と最小値の範囲検査を行うことが重要
+    - 最大値、最小値はグローバル変数で定義する
+
+### 2. Security through Obscurity Abuse / Buffer Overflow
+
+- 隠蔽によるセキュリティでは、不十分なことが多く、他のセキュリティ対策と合わせて使用するべきである
+    - 問題では、攻撃者がバイナリからこれらの攻撃を可能とすることが伺える
+- Buffer Overflowに関しては、やはり境界検査はしっかりやろうに帰着
+    - 「最低値から最大値の間のあたいになっているか」
+- gdbでバイナリ検査してわかったこと
+    - strtol()は、char*型の数字をint型に変換する関数だが、マイナス値を入れるとバイナリ上で補数表現がされる
+    - strtol()の演算結果をメモリのindex計算に用いると、マイナス値をうまく活用することで、想定よりも少し上のメモリ番地へアクセスできる
+        ```example
+        EAX = 0x5500000
+
+        // 本来なら`output_from_strtol = 0x10`ぐらい
+        output_from_strtol = 0xFFFFFFFFFFFA
+
+        /*
+        本来なら、せいぜい0x5500000より上の値にアクセスすることが想定されるが、
+        補数表現で大きな値が入ると、x64環境で12桁しか保持されないので、
+        演算結果が`0x1000005500000`となり、切り捨てで`0x000005500000`
+        つまり、このstructの第一メンバへのアクセスを許してしまう
+        */
+        struct[EAX + output_from_strtol + 0x6] = 1
+        ```
+
+### 3. Directory Traversal
+
+- 今までの考えだと、ディレクトリトラバーサルにはサニタイズで対処するのかと思っていた。が、入力されたパスを一回演算して、アクセス先が想定されたパス配下を指しているかを比較するという手段があることについて知れた
+    ```python
+    import os
+
+    # アクセスが想定されるパス
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+    inputPath = input("ユーザ／攻撃者が入力したパス:")
+
+    # ここで入力されたパスを一度演算する
+    realPath = os.path.realpath(inputPath)
+
+    # 入力されたパスとアクセスが想定されるパスが同じディレクトリ上を指しているか検査する
+    # ディレクトリトラバーサルがある場合、realPathは別のディレクトリを指す
+    assert base_dir == os.path.commonprefix([base_dir, realPath])
+    ```
+
+### 4. SQL Injection
+
+- SQL Injection対策にはplacefolderを使用する
+    ```python
+    query = "SELECT price FROM stocks WHERE symbol = ?"
+    cur.execute(query, (value,))
+    ```
+- セキュリティの観点では、動的なクエリ生成はよろしくないので、上記のようなプリペアドステートメントを使用するべき
+    - ユーザからクエリを受取、そのまま`executescript()`や`execute()`に流すのは危険
+        - クエリではなく、パラメータを受け取るというのが重要
+
+### 5. @
