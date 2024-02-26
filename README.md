@@ -2,7 +2,7 @@
 
 > This is my own README with a record of what I learned
 >
-> Original README is [here](/docs/README.md)
+> Original README is [here](./docs/README.md)
 
 ## Season-1
 
@@ -88,4 +88,25 @@
     - ユーザからクエリを受取、そのまま`executescript()`や`execute()`に流すのは危険
         - クエリではなく、パラメータを受け取るというのが重要
 
-### 5. @
+### 5. Weak Hash and Password
+
+- ハッシュ値における衝突攻撃の懸念があるため、MD5ではなく、SHA-256などの強力なハッシュ関数を使うべき
+- パスワードハッシュの話
+    - SHA-256は計算コスト(ビット長256bit, 64文字分)が高くないため、パスワードハッシュで使用すると解読される懸念？
+    - パスワードハッシュのベストプラクティスは[OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#peppering)を参考にすると良い
+    - パスワード保存の手段
+        - saltを使う
+        - pepperを使う：HMACを使う。パスワードハッシュ(本文)と共有鍵(Hardware Security Modulesにしまう)を元にもう一度ハッシュをかける。
+        - WorkFactorを使う：各パスワードに対してハッシュを何回か反復する。
+    - パスワードハッシュの手段
+        - **Argon2id** <= 今回はこれをpythonライブラリで実装する
+        - scrypt
+        - etc...
+- CodeQLの結果
+    - セキュリティタブ
+        ![Code scanning](./imgs/CodeScannig.png)
+    - 詳細
+        ![Measure1](./imgs/Measure1.png)
+        ![Measure2](./imgs/Measure2.png)
+        ![Measure3](./imgs/Measure3.png)
+        ![Measure4](./imgs/Measure4.png)

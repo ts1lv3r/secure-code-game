@@ -9,6 +9,9 @@ import hashlib
 import os
 import bcrypt
 
+## FIX
+from argon2 import PasswordHasher
+
 class Random_generator:
 
     # generates a random token
@@ -24,6 +27,7 @@ class Random_generator:
         salt = ''.join(str(random.randint(0, 9)) for _ in range(21)) + '.'
         return f'$2b${rounds}${salt}'.encode()
 
+## FIX (remove)
 class SHA256_hasher:
 
     # produces the password hash by combining password + salt because hashing
@@ -38,6 +42,7 @@ class SHA256_hasher:
         password_hash = password_hash.encode('ascii')
         return bcrypt.checkpw(password, password_hash)
 
+## FIX (remove)
 class MD5_hasher:
 
     # same as above but using a different algorithm to hash which is MD5
@@ -47,6 +52,17 @@ class MD5_hasher:
     def password_verification(self, password, password_hash):
         password = self.password_hash(password)
         return secrets.compare_digest(password.encode(), password_hash.encode())
+
+## FIX
+class ARGON2_hasher:
+
+    def password_hash(self, password):
+        ph = PasswordHasher()
+        return ph.hash(password)
+
+    def password_verification(self, password, password_hash):
+        ph = PasswordHasher()
+        return ph.verify(password_hash, password)
 
 # a collection of sensitive secrets necessary for the software to operate
 PRIVATE_KEY = os.environ.get('PRIVATE_KEY')
