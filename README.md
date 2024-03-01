@@ -6,7 +6,9 @@
 
 ## Season-1
 
-### 1. A floating-point underflow
+<details>
+
+<summary>【python】1. A Floating-point Underflow</summary>
 
 >  浮動小数点アンダーフロー脆弱性
 
@@ -33,7 +35,12 @@
 - また、プログラムの仕様に沿い／を定義し、適切な最大値と最小値の範囲検査を行うことが重要
     - 最大値、最小値はグローバル変数で定義する
 
-### 2. Security through Obscurity Abuse / Buffer Overflow
+</details>
+
+<details>
+
+<summary>【c】2. Security through Obscurity Abuse / Buffer Overflow</summary>
+
 
 - 隠蔽によるセキュリティでは、不十分なことが多く、他のセキュリティ対策と合わせて使用するべき
     - 問題では、攻撃者がバイナリからこれらの攻撃を可能とすることが伺える
@@ -57,7 +64,11 @@
         struct[EAX + input_from_strtol + 0x6] = 1
         ```
 
-### 3. Directory Traversal
+</details>
+
+<details>
+
+<summary>【python】3. Directory Traversal</summary>
 
 - 今までの考えだと、ディレクトリトラバーサルにはサニタイズで対処するのかと思っていた。が、入力されたパスを一回演算して、アクセス先が想定されたパス配下を指しているかを比較するという手段がある
     ```python
@@ -76,7 +87,11 @@
     assert base_dir == os.path.commonprefix([base_dir, realPath])
     ```
 
-### 4. SQL Injection
+</details>
+
+<details>
+
+<summary>【python】4. SQL Injection</summary>
 
 - SQL Injection対策にはplaceholderを使用する
     ```python
@@ -87,7 +102,11 @@
     - ユーザからクエリを受取、そのまま`executescript()`や`execute()`に流すのは危険
         - クエリではなく、パラメータを受け取るというのが重要
 
-### 5. Weak Hash and Password
+</details>
+
+<details>
+
+<summary>【python】5. Weak Hash and Password</summary>
 
 - ハッシュ値における衝突攻撃の懸念があるため、MD5ではなく、SHA-256などの強力なハッシュ関数を使うべき
 - パスワードハッシュの話
@@ -109,3 +128,56 @@
         ![Measure2](./imgs/Measure2.png)
         ![Measure3](./imgs/Measure3.png)
         ![Measure4](./imgs/Measure4.png)
+
+</details>
+
+## Season-2
+
+<details>
+
+<summary>【github-action】1. Untrust third-party action / Github Token Leakage</summary>
+
+- サードパーティ製のactionが不必要にGithub Tokenを求めている
+    - Github Tokenの漏洩でレポジトリを改変される可能性がある?
+- @
+
+</details>
+
+<details>
+
+<summary>【golang】2. Login Validation??</summary>
+
+- @
+- @
+
+</details>
+
+<details>
+
+<summary>【python】3. Reflected XSS</summary>
+
+- @
+- @
+
+</details>
+
+<details>
+
+<summary>【nodejs】4. Command Injection (related to XML)</summary>
+
+- @
+- @
+
+</details>
+
+<details>
+
+<summary>【javascript】5. Prototype Pollution</summary>
+
+- @
+- Mitigation
+    - 引数の型をチェックする
+    - Object.freeze
+- 参考: [HackTricks](https://book.hacktricks.xyz/v/jp/pentesting-web/deserialization/nodejs-proto-prototype-pollution#javascriptniokerupurototaipu)
+
+</details>
