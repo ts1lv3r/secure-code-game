@@ -135,7 +135,7 @@
 
 <details>
 
-<summary>1. 【github-action】Untrust third-party action / Github Token Leakage</summary>
+<summary>1. 【github-action】Untrusted Third-party Github Action</summary>
 
 - Github Marketplaceからサードパーティ製のGithub Actionを使用するのは便利だが、気をつけることも増える
     - (サードパーティ製のActionを通して)攻撃面が増える
@@ -182,10 +182,22 @@
 
 <summary>5. 【javascript】Prototype Pollution</summary>
 
-- @
-- Mitigation
-    - 引数の型をチェックする
-    - Object.freeze
+
+- Objectや`__proto__`、Arrayなどのプロパティを攻撃者が悪意のある関数等で上書きする攻撃
+- なお、これらの攻撃の実行条件として以下がある
+    - 再帰的なマージを実行する
+    - パスに基づいてプロパティを定義する
+    - オブジェクトをクローンする
+- 対策
+    - 入力の検証を行う(引数の型をチェックする等)
+    - オブジェクトの不変性を宣言する(Object.freeze)
+    - ローカル参照を作る
+        - JavaScriptでは、メソッドがローカル->グローバルの順に検索されるため
+        - 外部から干渉されないものを内部で使うという意図
+    - 配列の明示的な初期化?
+        - 空ではなく、使用する分の0で配列を初期化する等
+            - Arrayのsetterが汚染されても発火しないようになる？
+
 - 参考: [HackTricks](https://book.hacktricks.xyz/v/jp/pentesting-web/deserialization/nodejs-proto-prototype-pollution#javascriptniokerupurototaipu)
 
 </details>
