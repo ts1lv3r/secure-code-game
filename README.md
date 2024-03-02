@@ -8,7 +8,7 @@
 
 <details>
 
-<summary>【python】1. A Floating-point Underflow</summary>
+<summary>1. 【python】A Floating-point Underflow</summary>
 
 >  浮動小数点アンダーフロー脆弱性
 
@@ -39,7 +39,7 @@
 
 <details>
 
-<summary>【c】2. Security through Obscurity Abuse / Buffer Overflow</summary>
+<summary>2. 【__c__】Security through Obscurity Abuse / Buffer Overflow</summary>
 
 
 - 隠蔽によるセキュリティでは、不十分なことが多く、他のセキュリティ対策と合わせて使用するべき
@@ -68,7 +68,7 @@
 
 <details>
 
-<summary>【python】3. Directory Traversal</summary>
+<summary>3. 【python】Directory Traversal</summary>
 
 - 今までの考えだと、ディレクトリトラバーサルにはサニタイズで対処するのかと思っていた。が、入力されたパスを一回演算して、アクセス先が想定されたパス配下を指しているかを比較するという手段がある
     ```python
@@ -91,7 +91,7 @@
 
 <details>
 
-<summary>【python】4. SQL Injection</summary>
+<summary>4. 【python】SQL Injection</summary>
 
 - SQL Injection対策にはplaceholderを使用する
     ```python
@@ -106,7 +106,7 @@
 
 <details>
 
-<summary>【python】5. Weak Hash and Password</summary>
+<summary>5. 【python】Weak Hash and Password</summary>
 
 - ハッシュ値における衝突攻撃の懸念があるため、MD5ではなく、SHA-256などの強力なハッシュ関数を使うべき
 - パスワードハッシュの話
@@ -135,26 +135,28 @@
 
 <details>
 
-<summary>【github-action】1. Untrust third-party action / Github Token Leakage</summary>
+<summary>1. 【github-action】Untrust third-party action / Github Token Leakage</summary>
 
-- サードパーティ製のactionが不必要にGithub Tokenを求めている
+- Github Marketplaceからサードパーティ製のGithub Actionを使用するのは便利だが、気をつけることも増える
+    - (サードパーティ製のActionを通して)攻撃面が増える
+    - プロジェクトの依存関係が増える
+- サードパーティ製のActionを利用する際に気をつけること
+    - 単純なタスクには用いない
+    - 検証済みの作成者からのGitHubアクションを使用する
+    - バージョンは最新を保つ(セキュリティ上の修正が入っている可能性があるため)
+    - メンテナンスと更新を考慮する
+    - 組織の設定でActionを無効化／制限することを検討する
+    - Actionの追加には複数のレビュアで確認するプロセスを作る
+
+    - actionが不必要にGithub Tokenを求めている
     - Github Tokenの漏洩でレポジトリを改変される可能性がある?
-- @
+- Github Tokenの権限を既存のワークフローを壊さない限りで、必要最低限のアクセス許可にする(読み取り・書き込み ⇒ 読み取りのみなど)。
 
 </details>
 
 <details>
 
-<summary>【golang】2. Login Validation??</summary>
-
-- @
-- @
-
-</details>
-
-<details>
-
-<summary>【python】3. Reflected XSS</summary>
+<summary>2. 【golang】Login Validation??</summary>
 
 - @
 - @
@@ -163,7 +165,7 @@
 
 <details>
 
-<summary>【nodejs】4. Command Injection (related to XML)</summary>
+<summary>3. 【python】Reflected XSS</summary>
 
 - @
 - @
@@ -172,7 +174,16 @@
 
 <details>
 
-<summary>【javascript】5. Prototype Pollution</summary>
+<summary>4. 【nodejs】Command Injection (related to XML)</summary>
+
+- @
+- @
+
+</details>
+
+<details>
+
+<summary>5. 【javascript】Prototype Pollution</summary>
 
 - @
 - Mitigation
