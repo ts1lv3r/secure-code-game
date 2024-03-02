@@ -39,7 +39,7 @@
 
 <details>
 
-<summary>2. 【__c__】Security through Obscurity Abuse / Buffer Overflow</summary>
+<summary>2. 【c】Security through Obscurity Abuse / Buffer Overflow</summary>
 
 
 - 隠蔽によるセキュリティでは、不十分なことが多く、他のセキュリティ対策と合わせて使用するべき
@@ -147,9 +147,6 @@
     - メンテナンスと更新を考慮する
     - 組織の設定でActionを無効化／制限することを検討する
     - Actionの追加には複数のレビュアで確認するプロセスを作る
-
-    - actionが不必要にGithub Tokenを求めている
-    - Github Tokenの漏洩でレポジトリを改変される可能性がある?
 - Github Tokenの権限を既存のワークフローを壊さない限りで、必要最低限のアクセス許可にする(読み取り・書き込み ⇒ 読み取りのみなど)。
 
 </details>
