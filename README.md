@@ -44,8 +44,8 @@
 
 - 隠蔽によるセキュリティでは、不十分なことが多く、他のセキュリティ対策と合わせて使用するべき
     - 問題では、攻撃者がバイナリからこれらの攻撃を可能とすることが伺える
-- Buffer Overflowに関しては、やはり境界検査はしっかりやろうに帰着
-    - 「最低値から最大値の間のあたいになっているか」
+- Buffer Overflowに関しては、やはり範囲チェックはしっかりやろうに帰着
+    - 「想定する最低値から最大値の間の値になっているか」
 - gdbでバイナリ検査してわかったこと
     - strtol()は、char*型で表現された数字をlong型整数値に変換する関数だが、マイナス値を入れるとバイナリ上で補数表現がされる
     - strtol()の演算結果をメモリのindex計算に用いると、マイナス値をうまく活用することで、想定外のメモリ番地へアクセス可能となる
@@ -153,10 +153,38 @@
 
 <details>
 
-<summary>2. 【golang】Login Validation??</summary>
+<summary>2. 【golang】Sensitive Information Management</summary>
 
-- @
-- @
+- logにアクセス可能な攻撃者にsecretを盗まれる可能性があるので、logにはsecretを流さない／暗号化等の適切な処理をする
+    ```golang
+    log.Printf("Invalid email format: %q", email)
+    ```
+- 割と気づかなそうなユーザ(Email)列挙が可能となってしまうようなケース
+    - コード例）
+        ```
+        email := reqBody.Email
+        password := reqBody.Password
+
+        // ①
+        // ここで入力ユーザ(Email)に対する保存パスワードがないだけで弾いてしまうと、
+        // アプリ自体に登録されているユーザが見つかるまで、BruteForceで
+        // パスワードの成否に関係なくユーザ(Email)の探索・列挙が可能となってしまう
+        // (エラーメッセージの差異により)
+        storedPassword, ok := testFakeMockUsers[email]
+        if !ok {
+            http.Error(w, "invalid email or password", http.StatusUnauthorized)
+            return
+        }
+
+        // ②
+        // ここだけで弾けば、既存ユーザの列挙をされずに済む
+        if password == storedPassword {
+            ...
+		} else {
+			http.Error(w, "Invalid Email or Password", http.StatusUnauthorized)
+        }
+        ```
+    - 上のコード例では、①と②の時のエラーメッセージが違うことから攻撃者がユーザ列挙が可能であることを察すことができる。なので`solution.go`のようにエラーメッセージを統一するだけで、エラーメッセージの差異によるユーザ列挙が可能かの判別ができなくなる。
 
 </details>
 
