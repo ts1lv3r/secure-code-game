@@ -20,7 +20,8 @@ from flask import Flask, request, render_template
 app = Flask(__name__)
 
 # Set the absolute path to the template directory
-template_dir = os.path.abspath('Season-2/Level-3/templates')
+# template_dir = os.path.abspath('Season-2/Level-3/templates')
+template_dir = os.path.abspath('templates')
 app.template_folder = template_dir
 
 # Hard-coded planet data
@@ -36,12 +37,15 @@ planet_data = {
 def index():
     if request.method == 'POST':
         planet = request.form.get('planet')
-        sanitized_planet = re.sub(r'[<>{}[\]]', '', planet if planet else '')
+        # Official FIX
+        from markupsafe import escape
+        # sanitized_planet = re.sub(r'[<>{}[\]]', '', planet if planet else '')
+        sanitized_planet = escape(planet) if planet else ''
 
         if sanitized_planet:
             if 'script' in sanitized_planet.lower() :
                 return '<h2>Blocked</h2></p>'
-    
+
             return render_template('details.html', 
                                    planet=sanitized_planet, 
                                    info=get_planet_info(sanitized_planet))

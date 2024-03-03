@@ -190,10 +190,37 @@
 
 <details>
 
-<summary>3. 【python】Reflected XSS</summary>
+<summary>3. 【python】DOM based XSS</summary>
 
-- @
-- @
+- 元のサニタイズの実装だと不十分
+    - サニタイズ／正規表現が
+        - `()`の文字をカバーしていない
+        - `&lt`、`&gt`の特殊エンティティをカバーしていない
+    - `display.html`内で
+        - `safe`オプションにより自動エスケープがoffになってる
+        - `safe`オプションのついた危険なテキストを再利用している
+- 修正
+    - jinjaの`{{ *** | safe }}`は自動エスケープのOFFという意味なので、ここで描画されるテキストをHTMLとして再利用しないように気をつける
+    - 独自のエスケープを実装するのではなく、`markupsafe.escape()`を利用する
+- 一般的なXSSの防御方法
+    - ユーザーの入力を適切にサニタイズする
+    - コンテンツセキュリティポリシー（CSP）を使用する
+    - X-XSS-Protectionヘッダーを使用する
+    - HttpOnlyクッキーを使用する <= ???
+- DOM based XSS
+    - DOM からテキストを読み取りHTML として使用すると、テキストのエスケープが効果的に解除されXSSにつながる可能性がある。
+    - 対策の一つとしては、ページにテキストを書き込む前にエンコード/エスケープを使用することが挙げられる
+    - また、DOMの再利用時にHTMLとして読み込まないことも対策として挙げられる
+        ```javascript
+        // Bad Practice
+        var target = $(this).attr("data-target");
+        $(target).hide();
+
+        // Good Practice 
+        // `$.find()`関数により、HTMLではなくCSSセレクタとして読み込んでいる
+        var target = $(this).attr("data-target");
+        $.find(target).hide();
+        ```
 
 </details>
 

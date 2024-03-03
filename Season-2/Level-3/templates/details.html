@@ -22,6 +22,9 @@
     <p>Planet name: <span id="name">{{ planet | safe }}</span></p>
     <p>Planet info: {{ info | safe }}</p>
     <br/>
+
+    <!-- My Fix -->
+    <!-- <p>Search in Google for more information about the planet: <span id="planet"/>{{ planet | safe }}</p> -->
     <p>Search in Google for more information about the planet: <span id="planet"/></p>
     <script>
         document.getElementById("planet").innerHTML = document.getElementById("name").textContent;

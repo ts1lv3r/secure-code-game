@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "level-3"
+version = "0.1.0"
+description = ""
+authors = ["ts1lv3r <slvrgld7@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+flask = "^3.0.2"
+flask-testing = "^0.8.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
