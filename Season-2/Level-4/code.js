@@ -45,10 +45,31 @@ app.post("/ufo", (req, res) => {
     res.status(200).json({ ufo: "Received JSON data from an unknown planet." });
   } else if (contentType === "application/xml") {
     try {
+      // Fix 1, 2, 3
+      // まずnonetオプションをtrueにすることで、
+      // 解析時にドキュメントタイプ定義(<!DOCTYPE...>)を無効にする
+      // そうすると、カスタムエンティティも無効になる
+      //
+      // また、この際recoverもfalseに設定する
+      // hackの方で求められているのは400のErrorなので、
+      // ここでエラーが起きるようにしたい
+      //
+      // なおエラーの原理としては、XML本文で`&xxe`を指定しているのに対し、
+      // nonet=trueのおかげでカスタムエンティティ`xxe`がなく解析エラーが起きるため
+      //
+      // Fix 4
+      // replaceEntitiesもfalseにする必要があった
+      // nonet=trueでもreplaceEntitiesにより、
+      // XXEのカスタムエンティティの参照先ファイルの中身を読み込んで取り替えてしまう
+      // 今回のケースでは、読み込んだ内容がshellコマンドで、
+      // 後のコマンド実行機能で任意のコマンド結果を漏洩する形となった
       const xmlDoc = libxmljs.parseXml(req.body, {
-        replaceEntities: true,
-        recover: true,
-        nonet: false,
+        // replaceEntities: true,
+        // recover: true,
+        // nonet: false,
+        replaceEntities: false,
+        recover: false,
+        nonet: true,
       });
 
       console.log("Received XML data from XMLon:", xmlDoc.toString());

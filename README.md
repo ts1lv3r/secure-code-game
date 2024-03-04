@@ -226,10 +226,15 @@
 
 <details>
 
-<summary>4. 【nodejs】Command Injection (related to XML)</summary>
+<summary>4. 【nodejs】XXE</summary>
 
-- @
-- @
+- xmlのパースは多くの場合ライブラリが用意されていると思うが、そのオプションは適切に設定する必要がある。今回で言えば`libxmljs.parseXml()`関数が該当する。
+    - `replaceEntities: false`：XMLエンティティの置換オプションを無効にする。
+    - `recover: false`：特定の解析エラーからの回復を無効にする。
+    - `nonet: true`：解析時のネットワークアクセス(ファイルパスやURL)を無効にする。ここが有効だとカスタムエンティティで指定された任意のファイルが読み込まれたりする。
+- この問題では、上記の話以外にも実装としてよくないプラクティスがあった
+    - 任意のファイルタイプをアップロードできるファイルアップロード機能
+    - `.admin`拡張子を持つファイルから、サーバー上でのコマンド実行を可能とする機能
 
 </details>
 
